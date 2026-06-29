@@ -11,7 +11,7 @@ class SpimexTradingResults(Base):
 
     id: Mapped[int] = mapped_column(primary_key=True)
     exchange_product_id: Mapped[str] = mapped_column(String(25))
-    exchange_product_name: Mapped[str] = mapped_column(String(150))
+    exchange_product_name: Mapped[str] = mapped_column()
     oil_id: Mapped[str] = mapped_column(String(4))
     delivery_basis_id: Mapped[str] = mapped_column(String(3))
     delivery_basis_name: Mapped[str] = mapped_column(String(50))

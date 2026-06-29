@@ -8,7 +8,7 @@ def init_logger():
     logger.setLevel(logging.INFO)
 
     handler = RotatingFileHandler(
-        "src/second_task/logs/app.log", maxBytes=1024 * 1024, backupCount=5
+        "src/asyncio_test/logs/app.log", maxBytes=1024 * 1024, backupCount=5
     )
 
     formatter = logging.Formatter(
