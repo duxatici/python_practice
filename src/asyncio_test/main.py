@@ -4,10 +4,11 @@ from datetime import date
 
 import aiohttp
 
-from models.database import create_db, Session
+from services.file_writer import write_csv
+from models.database import create_db
 from exceptions import AppError
 from services.pdf_downloader import get_pages
-from services.repository import parse_metric_row
+from services.repository import copy_to_db
 from services.parser import get_tables
 from logger import logging
 
@@ -42,17 +43,16 @@ async def main():
         tables = get_tables(pages)
 
         logger.info("Заливаем данные в бд")
-        with Session() as session:
-            objs_to_insert = []
-            for report_date, table in tables.items():
-                for row in table:
-                    objs_to_insert.append(parse_metric_row(row, report_date))
-            session.add_all(objs_to_insert)
-            session.commit()
+
+        filename = "spimex_trading_results.csv"
+        for report_date, table in tables.items():
+            write_csv(table, report_date, filename)
+
+        copy_to_db(filename)
 
         logger.info("Конец программы")
 
-        logger.info("Execution time: ", time.time() - t0)
+        logger.info("Execution time: " + str(time.time() - t0))
 
     except AppError as e:
         logger.error(f"Ошибка: {e}")
