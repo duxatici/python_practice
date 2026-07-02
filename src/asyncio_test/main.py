@@ -35,7 +35,7 @@ async def main():
                 "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"
             },
         ) as session:
-            pages = await get_pages(date(2026, 1, 1), session)
+            pages = await get_pages(date(2026, 6, 30), session)
 
         logger.info("Начинаем формировать таблицы")
 
@@ -52,7 +52,7 @@ async def main():
 
         logger.info("Конец программы")
 
-        print("Execution time: ", time.time() - t0)
+        logger.info("Execution time: ", time.time() - t0)
 
     except AppError as e:
         logger.error(f"Ошибка: {e}")

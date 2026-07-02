@@ -25,7 +25,7 @@ async def get_pages(
 ) -> defaultdict[date, bytes]:
     pdf_urls = await get_pdf_urls_by_date(from_date, session)
 
-    semaphore = asyncio.Semaphore(1)
+    semaphore = asyncio.Semaphore(2)
 
     async def fetch_pdf(url: str) -> tuple[date, bytes] | None:
         cur_date = get_date_from_url(url)
