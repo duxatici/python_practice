@@ -17,5 +17,4 @@ class Base(DeclarativeBase):
 
 
 def create_db():
-    Base.metadata.drop_all(engine)
     Base.metadata.create_all(engine)

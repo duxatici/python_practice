@@ -57,7 +57,7 @@ async def get_reports_by_page(
 
 
 async def send_get_request(url: str, session: aiohttp.ClientSession) -> bytes:
-    attempt = 0
+    attempt: int = 0
     while True:
         try:
             async with session.get(url, ssl=False) as response:

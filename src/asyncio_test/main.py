@@ -36,7 +36,7 @@ async def main():
                 "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"
             },
         ) as session:
-            pages = await get_pages(date(2026, 6, 30), session)
+            pages = await get_pages(date(2026, 1, 1), session)
 
         logger.info("Начинаем формировать таблицы")
 
@@ -45,8 +45,8 @@ async def main():
         logger.info("Заливаем данные в бд")
 
         filename = "spimex_trading_results.csv"
-        for report_date, table in tables.items():
-            write_csv(table, report_date, filename)
+
+        write_csv(tables, filename)
 
         copy_to_db(filename)
 
