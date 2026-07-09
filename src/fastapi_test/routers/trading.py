@@ -1,7 +1,10 @@
 from datetime import date
 
-from fastapi import APIRouter, Depends, Query
+from fastapi import APIRouter, Depends, Query, Request
+from fastapi.encoders import jsonable_encoder
 from sqlalchemy.ext.asyncio import AsyncSession
+
+from ..cache import get_cached, set_cached
 
 from ..schemas.trading import (
     DynamicsQuery,
@@ -20,23 +23,56 @@ router = APIRouter(prefix="/api/trading", tags=["Trading"])
 
 @router.get("/last-dates", response_model=list[date])
 async def last_dates(
-    query: LastDatesQuery = Query(), session: AsyncSession = Depends(get_session)
+    request: Request,
+    query: LastDatesQuery = Query(),
+    session: AsyncSession = Depends(get_session),
 ):
+    cached = await get_cached(request)
+    if cached:
+        return cached
+
     repo = TradingRepository(session)
-    return await repo.get_last_trading_dates(**query.model_dump())
+    result = await repo.get_last_trading_dates(**query.model_dump())
+
+    cached_data = jsonable_encoder(result)
+    await set_cached(request, cached_data)
+
+    return result
 
 
 @router.get("/dynamics", response_model=list[SpimexTradingResultRead])
 async def dynamics(
-    query: DynamicsQuery = Query(), session: AsyncSession = Depends(get_session)
+    request: Request,
+    query: DynamicsQuery = Query(),
+    session: AsyncSession = Depends(get_session),
 ):
+    cached = await get_cached(request)
+    if cached:
+        return cached
+
     repo = TradingRepository(session)
-    return await repo.get_dynamics(**query.model_dump())
+    result = await repo.get_dynamics(**query.model_dump())
+
+    cached_data = jsonable_encoder(result)
+    await set_cached(request, cached_data)
+
+    return result
 
 
 @router.get("/results", response_model=list[SpimexTradingResultRead])
 async def results(
-    query: TradingResultsQuery = Query(), session: AsyncSession = Depends(get_session)
+    request: Request,
+    query: TradingResultsQuery = Query(),
+    session: AsyncSession = Depends(get_session),
 ):
+    cached = await get_cached(request)
+    if cached:
+        return cached
+
     repo = TradingRepository(session)
-    return await repo.get_trading_results(**query.model_dump())
+    result = await repo.get_trading_results(**query.model_dump())
+
+    cached_data = jsonable_encoder(result)
+    await set_cached(request, cached_data)
+
+    return result

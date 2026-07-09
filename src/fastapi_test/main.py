@@ -5,6 +5,10 @@ from contextlib import asynccontextmanager
 from fastapi import FastAPI, Request
 from fastapi.responses import JSONResponse
 
+from redis import asyncio as aioredis
+
+from .config import settings
+
 from .database import Base, engine
 from .routers.trading import router
 
@@ -13,11 +17,15 @@ logger = logging.getLogger(__name__)
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
+    redis_client = aioredis.from_url(settings.REDIS_URL, decode_responses=True)
+    app.state.redis = redis_client
+
     async with engine.begin() as conn:
         await conn.run_sync(Base.metadata.create_all)
 
     yield
 
+    await redis_client.close()
     await engine.dispose()
 
 
