@@ -3,7 +3,7 @@ from typing import AsyncGenerator
 from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker, create_async_engine
 from sqlalchemy.orm import DeclarativeBase
 
-from .config import settings
+from fastapi_test.config import settings
 
 engine = create_async_engine(settings.DB_URL, pool_pre_ping=True)
 

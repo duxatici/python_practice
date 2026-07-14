@@ -3,7 +3,7 @@ from decimal import Decimal
 from sqlalchemy import Date, DateTime, Integer, String, Numeric
 from sqlalchemy.orm import Mapped, mapped_column
 
-from ..database import Base
+from fastapi_test.database import Base
 
 
 class SpimexTradingResults(Base):

@@ -4,7 +4,7 @@ from typing import Sequence
 from sqlalchemy import distinct, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from ..models.spimex_trading_results import SpimexTradingResults
+from fastapi_test.models.spimex_trading_results import SpimexTradingResults
 
 
 class TradingRepository:

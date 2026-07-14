@@ -1,4 +1,3 @@
-from datetime import datetime, timedelta
 import json
 from typing import Any
 
@@ -6,36 +5,20 @@ from fastapi import Request
 from redis.asyncio import Redis
 
 
-def _ttl_until_1411() -> int:
-    now = datetime.now()
-    target = now.replace(hour=14, minute=11, second=0, microsecond=0)
-
-    if now >= target:
-        target += timedelta(days=1)
-
-    return int((target - now).total_seconds())
+def get_cache(request: Request) -> Cache:
+    return Cache(request.app.state.redis)
 
 
-def _build_cache_key(request: Request) -> str:
-    query = sorted(request.query_params.items())
-    query_str = "&".join(f"{k}={v}" for k, v in query)
+class Cache:
+    def __init__(self, redis: Redis) -> None:
+        self._redis = redis
 
-    return f"{request.method}:{request.url.path}:{query_str}"
+    async def get(self, key: str) -> Any:
+        data = await self._redis.get(key)
+        if data:
+            return json.loads(data)
 
+        return None
 
-async def get_cached(request: Request) -> Any:
-    key = _build_cache_key(request)
-    redis: Redis = request.app.state.redis
-    data = await redis.get(key)
-    if data:
-        return json.loads(data)
-
-    return None
-
-
-async def set_cached(request: Request, data: Any) -> None:
-    key = _build_cache_key(request)
-    redis: Redis = request.app.state.redis
-    ttl = _ttl_until_1411()
-
-    await redis.set(key, json.dumps(data, default=str), ex=ttl)
+    async def set(self, key: str, data: Any, ttl: int) -> None:
+        await self._redis.set(key, json.dumps(data, default=str), ex=ttl)
