@@ -1,5 +1,5 @@
 from decimal import Decimal
-from datetime import date, datetime, timedelta
+from datetime import date, datetime
 from typing import Optional
 
 from pydantic import BaseModel, ConfigDict, Field
@@ -34,5 +34,5 @@ class TradingResultsQuery(BaseModel):
 
 
 class DynamicsQuery(TradingResultsQuery):
-    start_date: date = Field(default_factory=lambda: date.today() - timedelta(3))
-    end_date: date = Field(default_factory=lambda: date.today())
+    start_date: Optional[date] = None
+    end_date: Optional[date] = None

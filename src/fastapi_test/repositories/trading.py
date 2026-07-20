@@ -6,6 +6,8 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from fastapi_test.models.spimex_trading_results import SpimexTradingResults
 
+DEFAULT_RESULT_LIMIT = 100
+
 
 class TradingRepository:
     def __init__(self, session: AsyncSession) -> None:
@@ -42,6 +44,7 @@ class TradingRepository:
         if end_date:
             stmt = stmt.where(SpimexTradingResults.date <= end_date)
 
+        stmt = stmt.limit(DEFAULT_RESULT_LIMIT)
         stmt = stmt.order_by(SpimexTradingResults.date.desc())
 
         result = await self.session.execute(stmt)
@@ -64,7 +67,7 @@ class TradingRepository:
                 SpimexTradingResults.delivery_basis_id == delivery_basis_id
             )
 
-        stmt = stmt.limit(100)
+        stmt = stmt.limit(DEFAULT_RESULT_LIMIT)
         stmt = stmt.order_by(SpimexTradingResults.date.desc())
 
         result = await self.session.execute(stmt)

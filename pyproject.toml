@@ -22,7 +22,7 @@ dependencies = [
     "asyncpg (>=0.31.0,<0.32.0)",
     "greenlet (>=3.5.3,<4.0.0)",
     "redis (>=8.0.1,<9.0.0)",
-    "alembic (>=1.18.5,<2.0.0)"
+    "alembic (>=1.18.5,<2.0.0)",
 ]
 
 
@@ -33,3 +33,15 @@ build-backend = "poetry.core.masonry.api"
 
 [tool.pytest.ini_options]
 pythonpath = ["src"]
+asyncio_mode = "auto"
+asyncio_default_fixture_loop_scope = "session"
+asyncio_default_test_loop_scope = "session"
+
+[dependency-groups]
+dev = [
+    "pytest (>=9.1.1,<10.0.0)",
+    "httpx (>=0.28.1,<0.29.0)",
+    "pytest-asyncio (>=1.4.0,<2.0.0)",
+    "testcontainers (>=4.14.2,<5.0.0)",
+    "pytest-mock (>=3.15.1,<4.0.0)",
+]

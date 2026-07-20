@@ -12,9 +12,11 @@ from fastapi_test.config import settings
 # access to the values within the .ini file in use.
 config = context.config
 
-config.set_main_option(
-    "sqlalchemy.url", settings.DB_URL.replace("+asyncpg", "+psycopg2")
-)
+alembic_url = config.get_main_option("sqlalchemy.url")
+if not alembic_url:
+    config.set_main_option(
+        "sqlalchemy.url", settings.DB_URL.replace("+asyncpg", "+psycopg2")
+    )
 
 # Interpret the config file for Python logging.
 # This line sets up loggers basically.

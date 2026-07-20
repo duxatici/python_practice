@@ -52,7 +52,7 @@ async def last_dates(
 ) -> Sequence[date]:
     key = _build_cache_key(request)
     cached = await cache.get(key)
-    if cached:
+    if cached is not None:
         return [date.fromisoformat(item) for item in cached]
 
     result = await repo.get_last_trading_dates(days=query.days)
@@ -73,7 +73,7 @@ async def dynamics(
 ) -> Sequence[SpimexTradingResultRead]:
     key = _build_cache_key(request)
     cached = await cache.get(key)
-    if cached:
+    if cached is not None:
         return [SpimexTradingResultRead.model_validate(item) for item in cached]
 
     result = await repo.get_dynamics(
@@ -100,7 +100,7 @@ async def results(
 ) -> Sequence[SpimexTradingResultRead]:
     key = _build_cache_key(request)
     cached = await cache.get(key)
-    if cached:
+    if cached is not None:
         return [SpimexTradingResultRead.model_validate(item) for item in cached]
 
     result = await repo.get_trading_results(
