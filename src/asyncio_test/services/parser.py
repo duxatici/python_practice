@@ -10,7 +10,7 @@ from logger import logging
 logger = logging.getLogger(__name__)
 
 
-def get_tables(pages: defaultdict[date, bytes]) -> dict[date, list[list[str]]]:
+def get_tables(pages: dict[date, bytes]) -> dict[date, list[list[str]]]:
     tables: defaultdict[date, list[list[str]]] = defaultdict(list)
     for report_date, page in pages.items():
         with pdfplumber.open(BytesIO(page)) as pdf:

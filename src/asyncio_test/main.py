@@ -1,3 +1,5 @@
+from concurrent.futures import ProcessPoolExecutor
+import os
 import time
 import asyncio
 from datetime import date
@@ -21,6 +23,8 @@ logger = logging.getLogger(__name__)
 # Время С asincio
 # Execution time:  315.6222677230835
 
+# Время с разделением по процессам
+# Execution time: 101.8265438079834
 timeout = aiohttp.ClientTimeout(total=20)
 
 
@@ -40,7 +44,18 @@ async def main():
 
         logger.info("Начинаем формировать таблицы")
 
-        tables = get_tables(pages)
+        cpu_count = os.cpu_count() or 1
+        page_items = list(pages.items())
+        chunks = [dict(page_items[i::cpu_count]) for i in range(cpu_count)]
+
+        with ProcessPoolExecutor() as p:
+            loop = asyncio.get_running_loop()
+            tasks = [loop.run_in_executor(p, get_tables, chunk) for chunk in chunks]
+            partials = await asyncio.gather(*tasks)
+
+        tables = {}
+        for part in partials:
+            tables.update(part)
 
         logger.info("Заливаем данные в бд")
 
