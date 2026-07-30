@@ -2,6 +2,7 @@ import pytest
 from httpx import AsyncClient
 
 
+@pytest.mark.slow
 @pytest.mark.parametrize(
     "params, expected",
     [
@@ -18,6 +19,7 @@ async def test_happy_path(client: AsyncClient, seed_data, params: str, expected:
     assert len(resp.json()) == expected
 
 
+@pytest.mark.slow
 async def test_cache_hit(client: AsyncClient, seed_data, mocker):
     from fastapi_test.repositories.trading import TradingRepository
 

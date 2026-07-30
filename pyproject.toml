@@ -36,6 +36,9 @@ pythonpath = ["src"]
 asyncio_mode = "auto"
 asyncio_default_fixture_loop_scope = "session"
 asyncio_default_test_loop_scope = "session"
+markers = [
+    "slow: тесты требующие контейнеры"
+]
 
 [dependency-groups]
 dev = [
@@ -44,4 +47,5 @@ dev = [
     "pytest-asyncio (>=1.4.0,<2.0.0)",
     "testcontainers (>=4.14.2,<5.0.0)",
     "pytest-mock (>=3.15.1,<4.0.0)",
+    "freezegun (>=1.5.5,<2.0.0)",
 ]
